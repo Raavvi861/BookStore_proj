@@ -10,14 +10,16 @@ import java.util.Random;
 
 import static io.restassured.RestAssured.*;
 
-public class UserApi {
+public class UserApi 
+{
 
     public static String generateEmailAndPassword(int length)
     {
         String candidateChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder stringGenerated = new StringBuilder ();
         Random random = new Random();
-        for (int i = 0; i < length; i ++) {
+        for (int i = 0; i < length; i ++) 
+        {
             stringGenerated.append (candidateChars.charAt (random.nextInt (candidateChars
                     .length ())));
         }
