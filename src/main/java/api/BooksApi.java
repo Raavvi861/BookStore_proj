@@ -1,26 +1,29 @@
 package api;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import constants.EndPoints;
 import data.BookStoreData;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+
 
 import static io.restassured.RestAssured.given;
 
-public class BooksApi {
-
-
+public class BooksApi 
+{
+    
     public static Response addNewBook(HashMap<String,Object> bookDetails, String accessToken,BookStoreData bookStoreData)
     {
         RequestSpecification request = given().contentType(ContentType.JSON).log().all();
 
-        if (accessToken!=null) {
+        if (accessToken!=null) 
+        {
             request.header("Authorization", accessToken);
         }
 
@@ -36,7 +39,8 @@ public class BooksApi {
     {
         RequestSpecification request = given().contentType(ContentType.JSON).log().all();
 
-        if (accessToken!=null) {
+        if (accessToken!=null) 
+        {
             request.header("Authorization", accessToken);
         }
 
@@ -52,7 +56,8 @@ public class BooksApi {
     {
         RequestSpecification request = given().contentType(ContentType.JSON).log().all();
 
-        if (accessToken!=null) {
+        if (accessToken!=null) 
+        {
             request.header("Authorization", accessToken);
         }
         return request.pathParam("book_id",bookDetails.get("createdBookId")).when().get(EndPoints.BY_BOOK_ID)
@@ -64,7 +69,8 @@ public class BooksApi {
         List<Response> responses = new ArrayList<>();
         RequestSpecification request = given().contentType(ContentType.JSON).log().all();
 
-        if (accessToken!=null) {
+        if (accessToken!=null) 
+        {
             request.header("Authorization", accessToken);
         }
                Response response= request.when().get(EndPoints.ADD_NEW_BOOK)
