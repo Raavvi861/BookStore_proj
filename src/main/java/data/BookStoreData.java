@@ -1,9 +1,9 @@
 package data;
 
+import java.util.List;
+
 import io.restassured.response.Response;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class BookStoreData {
