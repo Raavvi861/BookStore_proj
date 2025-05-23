@@ -1,5 +1,9 @@
 package Steps;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import api.BooksApi;
 import api.UserApi;
 import data.BookStoreData;
@@ -10,12 +14,9 @@ import io.cucumber.java.en.When;
 import io.restassured.response.Response;
 import org.testng.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-
-public class UserStepDefs {
+public class UserStepDefs
+    {
     HashMap<String,Object> bookDetails=new HashMap<>();
     List<HashMap<String,Object>> allBooksList=new ArrayList<>();
     private final BookStoreData bookStoreData;
@@ -32,7 +33,8 @@ public class UserStepDefs {
     }
 
     @When("^do the sign up with (.*) credentials$")
-    public void doTheSignUpWithValidCredentials(String condition) {
+    public void doTheSignUpWithValidCredentials(String condition) 
+        {
         if(condition.equalsIgnoreCase("valid"))
         {
             bookStoreData.setValidEmailUsed(UserApi.generateEmailAndPassword(10)+"@gmail.com");
@@ -46,7 +48,8 @@ public class UserStepDefs {
     }
 
     @Then("^validate that the response code is (.*) and response message should be (.*) after sign up$")
-    public void validateThatTheResponseCodeIsAfterSuccessfulSignUp(int statusCode,String responseMsg) {
+    public void validateThatTheResponseCodeIsAfterSuccessfulSignUp(int statusCode,String responseMsg) 
+        {
         Assert.assertEquals(bookStoreData.getSignUpResponse().getStatusCode(), statusCode,"Sign up expected status code mismatch");
         if(statusCode==200){
             Assert.assertEquals(responseMsg,bookStoreData.getSignUpResponse().getBody().jsonPath().get("message").toString(),"User is not created");
@@ -59,12 +62,14 @@ public class UserStepDefs {
     }
 
     @When("^do the sign up with credentials of email (.*) and password (.*)$")
-    public void doTheSignUpWithCredentialsOfEmailEmailAndPasswordPassword(String email,String password) {
+    public void doTheSignUpWithCredentialsOfEmailEmailAndPasswordPassword(String email,String password)
+        {
         UserApi.signUp(email,password, bookStoreData);
     }
 
     @When("^user tried to login with (.*) credentials into book store system$")
-    public void userTriedToLoginWithValidCredentialsIntoBookStoreSystem(String condition) {
+    public void userTriedToLoginWithValidCredentialsIntoBookStoreSystem(String condition)
+        {
         if(condition.equalsIgnoreCase("noSignUpUser"))
         {
             bookStoreData.setValidEmailUsed(UserApi.generateEmailAndPassword(10)+"@gmail.com");
@@ -78,11 +83,11 @@ public class UserStepDefs {
         bookStoreData.setLogInResponse(UserApi.login(bookStoreData.getValidEmailUsed(),bookStoreData.getValidPasswordUsed()));
 
 
-
     }
 
     @Then("^verify the response after login into book store should (.*) and (.*)$")
-    public void verifyTheResponseAfterLoginIntoBookStoreShouldAndSuccess(int statusCode,String condition) {
+    public void verifyTheResponseAfterLoginIntoBookStoreShouldAndSuccess(int statusCode,String condition) 
+        {
         Assert.assertEquals(bookStoreData.getLogInResponse().getStatusCode(), statusCode,"The response code is not "+statusCode);
         switch (condition)
         {
@@ -120,12 +125,14 @@ public class UserStepDefs {
 
 
     @When("add new book into book store with valid login token of user")
-    public void addNewBookIntoBookStoreWithValidLoginTokenOfUser() {
+    public void addNewBookIntoBookStoreWithValidLoginTokenOfUser() 
+        {
       bookStoreData.setAddBookResponse(BooksApi.addNewBook(bookDetails,bookStoreData.getAccessToken(),bookStoreData));
     }
 
     @Then("^verify the response after adding the new book should be (.*)$")
-    public void verifyTheResponseAfterAddingTheNewBookShouldBeSuccess(String condition) {
+    public void verifyTheResponseAfterAddingTheNewBookShouldBeSuccess(String condition) 
+        {
         if(condition.equalsIgnoreCase("success"))
         {
             Assert.assertNotNull(bookStoreData.getAddBookResponse().getBody().jsonPath().get("id"),"Unique id is not generated");
@@ -141,7 +148,8 @@ public class UserStepDefs {
     }
 
     @When("^edit the (.*) of the book added and verify the response after update$")
-    public void editTheNameOfTheBookAddedAndVerifyTheResponseAfterUpdate(String editAction) {
+    public void editTheNameOfTheBookAddedAndVerifyTheResponseAfterUpdate(String editAction) 
+        {
         if(editAction.equalsIgnoreCase("name"))
         {
             bookDetails.put("bookName","Book name is edited now");
@@ -153,7 +161,8 @@ public class UserStepDefs {
             bookDetails.put("published_year",System.nanoTime());
 
         }
-        if(editAction.equalsIgnoreCase("noAccessToken")){
+        if(editAction.equalsIgnoreCase("noAccessToken"))
+        {
             bookStoreData.setEditBookResponse(BooksApi.editTheBook(bookDetails,null));
         }
         else {
@@ -164,7 +173,8 @@ public class UserStepDefs {
     }
 
     @Then("^verify the response after update should be (.*)$")
-    public void verifyTheResponseAfterUpdateShouldBe(int statusCode) {
+    public void verifyTheResponseAfterUpdateShouldBe(int statusCode) 
+        {
         Assert.assertEquals(bookStoreData.getLogInResponse().getStatusCode(), statusCode,"The response code is not "+statusCode);
         if(statusCode==200)
         {
@@ -173,7 +183,8 @@ public class UserStepDefs {
         else if(statusCode==400)
         {
             Assert.assertEquals(bookStoreData.getEditBookResponse().getStatusLine(),"HTTP/1.1 400 Bad Request","Response line is not as expected for 400");
-        } else if (statusCode==403) {
+        } else if (statusCode==403) 
+        {
             Assert.assertEquals(bookStoreData.getEditBookResponse().getStatusLine(),"HTTP/1.1 403 Forbidden","Response line is not as expected for 403");
             Assert.assertEquals(bookStoreData.getEditBookResponse().getBody().jsonPath().get("detail"),"Not authenticated","No error message for 403");
         }
@@ -193,13 +204,15 @@ public class UserStepDefs {
     }
 
     @When("get the details of the particular book using book id generated while creating")
-    public void getTheDetailsOfTheParticularBookUsingBookIdGeneratedWhileCreating() {
+    public void getTheDetailsOfTheParticularBookUsingBookIdGeneratedWhileCreating()
+        {
       bookStoreData.setGetBookDetailsById(BooksApi.getBookDetailsById(bookDetails, bookStoreData.getAccessToken()));
 
     }
 
     @Then("verify the book details are fetched properly in the response by book id")
-    public void verifyTheBookDetailsAreFetchedProperlyInTheResponseByBookId() {
+    public void verifyTheBookDetailsAreFetchedProperlyInTheResponseByBookId()
+        {
         Assert.assertEquals(bookStoreData.getGetBookDetailsById().getBody().jsonPath().get("name"),bookDetails.get("bookName"),"Book name  mismatch");
         Assert.assertEquals(bookStoreData.getGetBookDetailsById().getBody().jsonPath().get("author"),bookDetails.get("author"),"Author name mismatch");
         Assert.assertEquals(bookStoreData.getGetBookDetailsById().getBody().jsonPath().get("published_year"),bookDetails.get("published_year"),"Published year mismatch");
@@ -209,18 +222,21 @@ public class UserStepDefs {
     }
 
     @Then("verify the book details should not be fetched properly in the response for deleted book id")
-    public void verifyTheBookDetailsShouldNotBeFetchedProperlyInTheResponseForDeletedBookId() {
+    public void verifyTheBookDetailsShouldNotBeFetchedProperlyInTheResponseForDeletedBookId() 
+        {
         Assert.assertEquals(bookStoreData.getGetBookDetailsById().getBody().jsonPath().get("detail"),"Book not found","Book details should not be fetched for deleted");
 
     }
 
     @When("fetch all the books that added to the book store")
-    public void fetchAllTheBooksThatAddedToTheBookStore() {
+    public void fetchAllTheBooksThatAddedToTheBookStore() 
+        {
        bookStoreData.setFetchAllBooks(BooksApi.getAllBooks(bookStoreData.getAccessToken()));
     }
 
     @Then("verify the details of books that listed")
-    public void verifyTheDetailsOfBooksThatListed() {
+    public void verifyTheDetailsOfBooksThatListed()
+        {
         for(HashMap<String,Object> eachData:allBooksList)
         {
             System.out.println(bookStoreData.getFetchAllBooks().contains(eachData));
@@ -228,18 +244,21 @@ public class UserStepDefs {
     }
 
     @And("delete the added book in the book store using book id and verify the response")
-    public void deleteTheAddedBookInTheBookStoreUsingBookIdAndVerifyTheResponse() {
+    public void deleteTheAddedBookInTheBookStoreUsingBookIdAndVerifyTheResponse() 
+        {
        bookStoreData.setDeleteBookResponse(BooksApi.deleteTheBookById(bookDetails.get("createdBookId").toString(), bookStoreData.getAccessToken()));
     }
 
     @And("^verify the response after deleting the book should be (.*)$")
-    public void verifyTheResponseAfterDeletingTheBookShouldBeSuccess(String condition) {
+    public void verifyTheResponseAfterDeletingTheBookShouldBeSuccess(String condition) 
+        {
         if(condition.equalsIgnoreCase("Success"))
         {
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getStatusCode(), 200,"The response code is not 200");
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getStatusLine(),"HTTP/1.1 200 OK","Response line is not as expected");
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getBody().jsonPath().get("message"),"Book deleted successfully","Book not deleted yet");
-        } else if (condition.equalsIgnoreCase("notFound")) {
+        } else if (condition.equalsIgnoreCase("notFound")) 
+        {
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getStatusCode(), 404,"The response code is not 404");
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getStatusLine(),"HTTP/1.1 404 Not Found","Response line is not as expected");
             Assert.assertEquals(bookStoreData.getDeleteBookResponse().getBody().jsonPath().get("detail"),"Book not found","Book should not be deleted");
